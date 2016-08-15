@@ -25,14 +25,14 @@ func NewNegroniAccessLog(path string) *NegroniAccessLog {
 
 	// Create a buffered writer and ensure it is flushed when an interrupt occurs.
 	bufferedAccessLogWriter := bufio.NewWriter(accessLogFile)
+
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		defer accessLogFile.Close()
 		<-c
-		log.Println("Flushing logs and exiting...")
+		log.Println("Flushing logs...")
 		bufferedAccessLogWriter.Flush()
-		os.Exit(0)
 	}()
 
 	return &NegroniAccessLog{accessLogFile}
